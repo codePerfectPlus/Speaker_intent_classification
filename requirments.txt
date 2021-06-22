@@ -1,0 +1,8 @@
+librosa
+scipy
+numpy
+flask
+python_speech_features
+keras
+tensorflow
+pandas
