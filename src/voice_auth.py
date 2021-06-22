@@ -13,8 +13,8 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # FATAL
 logging.getLogger('tensorflow').setLevel(logging.FATAL)
 
 # IMPORT USER-DEFINED FUNCTIONS
-from feature_extraction import get_embedding
-import parameters as p
+from src.feature_extraction import get_embedding
+import src.parameters as p
 
 def enroll_user(name, file):
     """ 

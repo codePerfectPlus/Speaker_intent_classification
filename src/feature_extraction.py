@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 from scipy.spatial.distance import cdist, euclidean, cosine
 
-from preprocess import get_fft_spectrum
-import parameters as p
+from src.preprocess import get_fft_spectrum
+import src.parameters as p
 
 
 def buckets(max_time, steptime, frameskip):

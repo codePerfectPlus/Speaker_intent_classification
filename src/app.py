@@ -4,9 +4,9 @@ from flask import Flask, request, jsonify, Response
 from werkzeug.utils import secure_filename
 from functools import wraps
 
-from voice_auth import recognize_user, enroll_user
+from src.voice_auth import recognize_user, enroll_user
 
-base_dir = Path(__file__).parent
+base_dir = Path(__file__).parent.parent
 
 app = Flask(__name__)
 
@@ -36,10 +36,12 @@ def authenticate():
 @app.route('/')
 def home():
     return jsonify({
-        "status": "200"
+        "status": True,
+        'response': 200
     })
 
 @app.route('/api/v1/register', methods=['POST'])
+@requires_auth
 def register_new_user():
     """ 
     Function for registering new user on server
