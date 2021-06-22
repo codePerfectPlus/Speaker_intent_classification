@@ -52,7 +52,7 @@ def register_new_user():
     audio_directory = os.path.join(base_dir, "data/wav")
     file_name = secure_filename(audio_file.filename)
 
-    full_file_name = os.path.join(audio_directory, username + "wav")
+    full_file_name = os.path.join(audio_directory, username + ".wav")
 
     audio_file.save(full_file_name)
 
