@@ -4,4 +4,4 @@ numpy
 flask
 python_speech_features
 keras
-tensorflow
+tensorflow==2.3.2
