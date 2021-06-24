@@ -4,7 +4,7 @@ from scipy.spatial.distance import cdist, euclidean, cosine
 
 import logging
 import warnings
-from keras.models import load_model
+from tensorflow.keras.models import load_model
 
 warnings.filterwarnings("ignore")
 logging.basicConfig(level=logging.ERROR)
