@@ -1,6 +1,5 @@
 import os
 import numpy as np
-import pandas as pd
 from scipy.spatial.distance import cdist, euclidean, cosine
 
 from src.utils.preprocess import get_fft_spectrum
