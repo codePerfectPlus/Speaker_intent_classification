@@ -1,16 +1,12 @@
 import os
-from pathlib import Path
+import shutil
 from flask import Flask, request, jsonify, Response
 from werkzeug.utils import secure_filename
 from functools import wraps
 
-from src.voice_auth import recognize_user, enroll_user
+from src.utils.voice_auth import recognize_user, enroll_user
+from src.config import app, base_dir
 
-base_dir = Path(__file__).parent.parent
-
-app = Flask(__name__)
-
-app.config["DEBUG"] = True
 
 def requires_auth(f):
     @wraps(f)
@@ -55,29 +51,40 @@ def register_new_user():
     full_file_name = os.path.join(audio_directory, username + ".wav")
 
     audio_file.save(full_file_name)
-
     response = enroll_user(username, full_file_name)
 
+    os.remove(full_file_name)
     return jsonify({
         'status': True,
         'response': response })
 
+    
 @app.route("/api/v1/authenticate", methods=['POST'])
+@requires_auth
 def authenticate_user():
+    """ function for authentication user on server """
 
     audio_file = request.files["file"]
-    #email = request.get_json(force=True).decode("utf-8")
+    username = request.form['username']
 
     audio_directory = os.path.join(base_dir, "data/wav")
     file_name = secure_filename(audio_file.filename)
 
-    full_file_name = os.path.join(audio_directory, f"{file_name}")
+    full_file_name = os.path.join(audio_directory, username + ".wav")
 
     audio_file.save(full_file_name)
 
     response = recognize_user(full_file_name)
-    print(response)
-
-    return jsonify({
+    
+    os.remove(full_file_name)
+    
+    if response == username:
+        return jsonify({
         'status': True,
         'response': response })
+
+    else:
+        return jsonify({
+            'status': False,
+            'response': 'You voice did not match with any enrolled user.'
+        })

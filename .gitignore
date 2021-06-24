@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# personal folder
+deepak008.npy
+Deepak11/

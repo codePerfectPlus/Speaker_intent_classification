@@ -3,7 +3,7 @@ import numpy as np
 from scipy.signal import lfilter, butter
 from python_speech_features import sigproc
 
-from src import parameters as p
+from src.utils import parameters as p
 
 def load(filename, sample_rate):
     audio, sr = librosa.load(filename, sr=sample_rate, mono=True)

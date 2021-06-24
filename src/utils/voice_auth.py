@@ -13,25 +13,27 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # FATAL
 logging.getLogger('tensorflow').setLevel(logging.FATAL)
 
 # IMPORT USER-DEFINED FUNCTIONS
-from src.feature_extraction import get_embedding
-import src.parameters as p
+from src.utils.feature_extraction import get_embedding
+import src.utils.parameters as p
 
 def enroll_user(name, file):
     """ 
     Enroll a user with an audio file
+
         inputs: str (Name of the person to be enrolled and registered)
                 str (Path to the audio file of the person to enroll)
-        outputs: None
+                
+        outputs: response
     """
-
-    print("Loading model weights from [{}]....".format(p.MODEL_FILE))
     try:
         model = load_model(p.MODEL_FILE)
+        logging.info("Loading model weights from [{}]....".format(p.MODEL_FILE))
     except:
         return "Failed to load weights from the weights file, please ensure *.pb file is present in the MODEL_FILE directory"
     try:
-        print("Processing enroll sample....")
+        logging.info("Processing enroll sample....")
         enroll_result = get_embedding(model, file, p.MAX_SEC)
+        
         enroll_embs = np.array(enroll_result.tolist())
         speaker = name
     except:
@@ -53,31 +55,35 @@ def recognize_user(file):
     if os.path.exists(p.EMBED_LIST_FILE):
         embeds = os.listdir(p.EMBED_LIST_FILE)
     if len(embeds) == 0:
-        print("No enrolled users found")
+        logging.info("No enrolled users found")
         exit()
-    print("Loading model weights from [{}]....".format(p.MODEL_FILE))
+    logging.info("Loading model weights from [{}]....".format(p.MODEL_FILE))
     try:
         model = load_model(p.MODEL_FILE)
 
     except:
-        print("Failed to load weights from the weights file, please ensure *.pb file is present in the MODEL_FILE directory")
+        logging.info("Failed to load weights from the weights file, please ensure *.pb file is present in the MODEL_FILE directory")
         exit()
         
     distances = {}
-    print("Processing test sample....")
-    print("Comparing test sample against enroll samples....")
+    logging.info("Processing test sample....")
+    logging.info("Comparing test sample against enroll samples....")
+
     test_result = get_embedding(model, file, p.MAX_SEC)
     test_embs = np.array(test_result.tolist())
+
     for emb in embeds:
-        enroll_embs = np.load(os.path.join(p.EMBED_LIST_FILE,emb))
+        enroll_embs = np.load(os.path.join(p.EMBED_LIST_FILE, emb))
         speaker = emb.replace(".npy", "")
         distance = euclidean(test_embs, enroll_embs)
-        distances.update({speaker:distance})
+        distances.update({speaker : distance})
+
     if min(list(distances.values()))<p.THRESHOLD:
         response = min(distances, key=distances.get)
         return response
+
     else:
-        print("Could not identify the user, try enrolling again with a clear voice sample")
+        logging.info("Could not identify the user, try enrolling again with a clear voice sample")
         response = ("Score: ", min(list(distances.values())))
         return response
         
@@ -85,7 +91,7 @@ def recognize_user(file):
 def file_choices(choices, filename):
     ext = os.path.splitext(filename)[1][1:]
     if ext not in choices:
-        print("file doesn't end with one of {}".format(choices))
+        logging.info("file doesn't end with one of {}".format(choices))
     return filename
 
 def get_extension(filename):
