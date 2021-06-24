@@ -10,7 +10,7 @@ def create_app():
     app = Flask(__name__)
 
     app.config['DEBUG'] = True
-
+    
     return app
 
 app = create_app()

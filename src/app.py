@@ -86,5 +86,5 @@ def authenticate_user():
     else:
         return jsonify({
             'status': False,
-            'response': 'You voice did not match with any enrolled user.'
+            'response': f'You voice did not match with {username} user.'
         })
