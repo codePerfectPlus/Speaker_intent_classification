@@ -36,8 +36,8 @@ def enroll_user(name, file):
         
         enroll_embs = np.array(enroll_result.tolist())
         speaker = name
-    except:
-        return "Error processing the input audio file. Make sure the path."
+    except Exception as e:
+        return "Error processing the input audio file. Make sure the path.", e
     try:
         np.save(os.path.join(p.EMBED_LIST_FILE, speaker + ".npy"), enroll_embs)
         return f"Successfully enrolled the {speaker} on server"
