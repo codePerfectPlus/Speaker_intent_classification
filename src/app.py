@@ -66,8 +66,7 @@ def authenticate_user():
     """ function for authentication user on server """
 
     audio_file = request.files["file"]
-    username = request.form['username'].lower()
-
+    
     audio_directory = os.path.join(base_dir, "data/wav")
     file_name = secure_filename(audio_file.filename)
 
@@ -77,14 +76,8 @@ def authenticate_user():
 
     response = recognize_user(full_file_name)
     
-    if response == username:
-
-        return jsonify({
-            'status': True,
-            'response': response })
-
-    else:
-        return jsonify({
-            'status': False,
-            'response': "You voice doesn't match with anyone here."
-        })
+   
+    return jsonify({
+        'status': True,
+        'response': response 
+    })

@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from scipy.spatial.distance import cdist, euclidean, cosine 
+from scipy.spatial.distance import euclidean, cosine, minkowski
 
 import logging
 import warnings
@@ -22,7 +22,7 @@ def enroll_user(name, file):
 
         inputs: str (Name of the person to be enrolled and registered)
                 str (Path to the audio file of the person to enroll)
-                
+            
         outputs: response
     """
     try:
@@ -66,6 +66,7 @@ def recognize_user(file):
         exit()
         
     distances = {}
+
     logging.info("Processing test sample....")
     logging.info("Comparing test sample against enroll samples....")
 
@@ -78,13 +79,17 @@ def recognize_user(file):
         distance = euclidean(test_embs, enroll_embs)
         distances.update({speaker : distance})
 
-    if min(list(distances.values()))<p.THRESHOLD:
+    print(distances)
+    print(min(list(distances.values())))
+
+    if min(list(distances.values())) < 0.00001:
+        print(min(list(distances.values())))
         response = min(distances, key=distances.get)
         return response
 
     else:
         logging.info("Could not identify the user, try enrolling again with a clear voice sample")
-        response = ("Score: ", min(list(distances.values())))
+        response = ("Could not identify the user, try enrolling again with a clear voice sample")
         return response
         
 #Helper functions
