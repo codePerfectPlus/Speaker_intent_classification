@@ -73,17 +73,18 @@ def recognize_user(file):
     test_result = get_embedding(model, file, p.MAX_SEC)
     test_embs = np.array(test_result.tolist())
 
+    print('-'*100)
     for emb in embeds:
         enroll_embs = np.load(os.path.join(p.EMBED_LIST_FILE, emb))
         speaker = emb.replace(".npy", "")
         distance = euclidean(test_embs, enroll_embs)
         distances.update({speaker : distance})
+        print(speaker, distance)
 
-    print(distances)
-    print(min(list(distances.values())))
+    print('-'*100)
+    print("Minimum value: ", min(list(distances.values())))
 
-    if min(list(distances.values())) < 0.00001:
-        print(min(list(distances.values())))
+    if min(list(distances.values())) < p.THRESHOLD:
         response = min(distances, key=distances.get)
         return response
 
