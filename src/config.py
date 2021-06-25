@@ -9,7 +9,7 @@ print(base_dir)
 def create_app():
     app = Flask(__name__)
 
-    app.config['DEBUG'] = True
+    app.config['DEBUG'] = False
     
     return app
 
