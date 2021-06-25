@@ -1,4 +1,5 @@
 import os
+import uuid
 import shutil
 from flask import Flask, request, jsonify, Response
 from werkzeug.utils import secure_filename
@@ -43,7 +44,7 @@ def register_new_user():
     Function for registering new user on server
     """
     audio_file = request.files["file"]
-    username = request.form['username']
+    username = request.form['username'].lower()
 
     audio_directory = os.path.join(base_dir, "data/wav")
     file_name = secure_filename(audio_file.filename)
@@ -65,26 +66,17 @@ def authenticate_user():
     """ function for authentication user on server """
 
     audio_file = request.files["file"]
-    username = request.form['username']
 
     audio_directory = os.path.join(base_dir, "data/wav")
     file_name = secure_filename(audio_file.filename)
 
-    full_file_name = os.path.join(audio_directory, username + ".wav")
+    full_file_name = os.path.join(audio_directory, str(uuid.uuid1()) + ".wav")
 
     audio_file.save(full_file_name)
 
     response = recognize_user(full_file_name)
     
-    os.remove(full_file_name)
-    
-    if response == username:
-        return jsonify({
+    return jsonify({
         'status': True,
         'response': response })
 
-    else:
-        return jsonify({
-            'status': False,
-            'response': f'You voice did not match with {username} user.'
-        })
