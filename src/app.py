@@ -74,10 +74,10 @@ def authenticate_user():
 
     audio_file.save(full_file_name)
 
-    response = recognize_user(full_file_name)
+    status, response = recognize_user(full_file_name)
     
    
     return jsonify({
-        'status': True,
+        'status': status,
         'response': response 
     })

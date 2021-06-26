@@ -86,12 +86,14 @@ def recognize_user(file):
 
     if min(list(distances.values())) < p.THRESHOLD:
         response = min(distances, key=distances.get)
-        return response
+        status = True
+        return status, response
 
     else:
         logging.info("Could not identify the user, try enrolling again with a clear voice sample")
         response = ("Could not identify the user, try enrolling again with a clear voice sample")
-        return response
+        status = False
+        return status, response
         
 #Helper functions
 def file_choices(choices, filename):
