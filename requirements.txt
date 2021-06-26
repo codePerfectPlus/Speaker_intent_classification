@@ -1,9 +1,11 @@
-python-dotenv
 gunicorn
 librosa
 scipy
 numpy
+pandas
+spacy
 flask
 python_speech_features
 keras
 tensorflow
+normalise

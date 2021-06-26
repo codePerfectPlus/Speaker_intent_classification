@@ -29,7 +29,7 @@ def enroll_user(name, file):
         model = load_model(p.MODEL_FILE)
         logging.info("Loading model weights from [{}]....".format(p.MODEL_FILE))
     except:
-        return "Failed to load weights from the weights file, please ensure *.pb file is present in the MODEL_FILE directory"
+        return False, "Failed to load weights from the weights file, please ensure *.pb file is present in the MODEL_FILE directory"
     try:
         logging.info("Processing enroll sample....")
         enroll_result = get_embedding(model, file, p.MAX_SEC)
@@ -37,12 +37,12 @@ def enroll_user(name, file):
         enroll_embs = np.array(enroll_result.tolist())
         speaker = name
     except Exception as e:
-        return "Error processing the input audio file. Make sure the path.", e
+        return False, "Error processing the input audio file. Make sure the path.", e
     try:
         np.save(os.path.join(p.EMBED_LIST_FILE, speaker + ".npy"), enroll_embs)
-        return f"Successfully enrolled the {speaker} on server"
+        return True, f"Successfully enrolled the {speaker} on server"
     except:
-        return "Unable to save the user into the database."
+        return False, "Unable to save the user into the database."
 
 
 def recognize_user(file):
@@ -73,27 +73,23 @@ def recognize_user(file):
     test_result = get_embedding(model, file, p.MAX_SEC)
     test_embs = np.array(test_result.tolist())
 
-    print('-'*100)
     for emb in embeds:
         enroll_embs = np.load(os.path.join(p.EMBED_LIST_FILE, emb))
         speaker = emb.replace(".npy", "")
         distance = euclidean(test_embs, enroll_embs)
         distances.update({speaker : distance})
-        print(speaker, distance)
 
-    print('-'*100)
+    print(distances)
     print("Minimum value: ", min(list(distances.values())))
 
     if min(list(distances.values())) < p.THRESHOLD:
         response = min(distances, key=distances.get)
-        status = True
-        return status, response
+        return True, response
 
     else:
         logging.info("Could not identify the user, try enrolling again with a clear voice sample")
         response = ("Could not identify the user, try enrolling again with a clear voice sample")
-        status = False
-        return status, response
+        return False, response
         
 #Helper functions
 def file_choices(choices, filename):
