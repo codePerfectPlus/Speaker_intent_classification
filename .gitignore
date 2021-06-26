@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 
 # personal folder
-/data
+embed/
