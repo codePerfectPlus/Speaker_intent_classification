@@ -1,4 +1,4 @@
-import os
+""" Feature extraction for voice classification """
 import numpy as np
 from scipy.spatial.distance import cdist, euclidean, cosine
 

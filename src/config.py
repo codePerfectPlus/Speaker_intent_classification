@@ -1,3 +1,5 @@
+""" Configuration file for flask """
+
 from flask import Flask
 from pathlib import Path
 import logging

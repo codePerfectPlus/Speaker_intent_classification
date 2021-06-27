@@ -1,9 +1,12 @@
 import io
+import json
+import spacy
+
 import numpy as np
 import pandas as pd
-import spacy
-import json
 import tensorflow as tf
+
+from src.utils.text_preprocessing import preprocessing
 
 df = pd.read_csv("data/intents.csv")
 inputs = df["inputs"]
@@ -13,22 +16,17 @@ index_cat_val_pair =  "data/targets.json"
 
 nlp = spacy.load('en_core_web_sm')
 
-def tokenize_data(input_list):
-    """ Tokenize the text """
-    tokenizer = tf.keras.preprocessing.text.Tokenizer(filters='', oov_token='<unk>')
-    
-    tokenizer.fit_on_texts(input_list)
-        
-    return tokenizer
-
-tokenizer = tokenize_data(inputs)
-
 def get_intent(sentence) -> str:
     """ get intent of text using text classification
 
         inputs: text: str
         outputs: intent: str
     """
+    
+    sentence = preprocessing(sentence.lower())
+    tokenizer = tf.keras.preprocessing.text.Tokenizer(filters='', oov_token='<unk>')
+    tokenizer.fit_on_texts(inputs)
+
     sent_seq = []
     doc = nlp(repr(sentence))
     
@@ -45,12 +43,13 @@ def get_intent(sentence) -> str:
     # predict the category of input sentences
     
     model = load_model(model_path)
+
     pred = model(sent_seq)
     pred_class = np.argmax(pred.numpy(), axis=1)
-    return trg_index_word[str(pred_class[0])]
+    intent = trg_index_word[str(pred_class[0])]
+    return sentence, intent
 
 # helper functions
-
 # loading the categorial to index key value
 with io.open(index_cat_val_pair, "r") as outfile:
     trg_index_word = json.load(outfile)

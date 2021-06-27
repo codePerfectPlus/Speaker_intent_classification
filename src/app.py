@@ -1,3 +1,4 @@
+""" Flask app.py """
 import os
 import uuid
 from flask import Flask, request, jsonify, Response
@@ -93,8 +94,8 @@ def get_text_intent():
     if request.method == 'POST':
         text = request.form["text"]
 
-        intent = get_intent(text)
+        text, intent = get_intent(text)
 
-        return jsonify({'status': True, 'response': intent})
+        return jsonify({'status': True, 'response': intent, "text": text})
 
     return jsonify({'status': True, 'response': 200})

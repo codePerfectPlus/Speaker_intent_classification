@@ -1,3 +1,5 @@
+""" Training files for intent classification using tensorflow and keras """
+
 import io
 import re
 import json
@@ -10,7 +12,8 @@ import tensorflow as tf
 from tensorflow.keras import layers
 
 from src.config import logging
-from src import parameters as p
+from src.utils import parameters as p
+from src.utils.text_preprocessing import preprocessing
 
 logging.info('loading json data')
 
@@ -18,21 +21,6 @@ with io.open('data/intents.json') as f:
     intents = json.load(f)
 
 logging.info('preprocessing the data')
-
-
-def preprocessing(text: str) -> str:
-
-    tokenizer = tf.keras.preprocessing.text.Tokenizer(filters='', 
-                                                      oov_token='<unk>')
-    tokenizer.fit_on_texts(text)
-
-    text = normalise(text, verbose=True)
-    text = ' '.join(t for t in text)
-
-    text = re.sub(r'[^a-zA-z.?!\']', ' ', text)
-    text = re.sub(r'[ ]+', ' ', text)
-
-    return text
 
 
 inputs, targets = [], []
@@ -91,6 +79,7 @@ units = 128
 target_length = target_tensor.shape[1]
 
 logging.info('creating intent classification model')
+
 model = tf.keras.models.Sequential([
     layers.Embedding(vocab_size, embed_dim),
     layers.Bidirectional(layers.LSTM(units, dropout=0.2)),
