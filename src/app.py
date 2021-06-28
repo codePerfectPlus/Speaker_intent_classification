@@ -35,10 +35,7 @@ def authenticate():
 
 @app.route('/')
 def home():
-    return jsonify({
-        "status": True,
-        'response': 200
-    })
+    return jsonify({"status": True, 'response': 200})
 
 
 @app.route('/api/v1/register', methods=['GET', 'POST'])

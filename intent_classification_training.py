@@ -80,13 +80,16 @@ target_length = target_tensor.shape[1]
 
 logging.info('creating intent classification model')
 
-model = tf.keras.models.Sequential([
-    layers.Embedding(vocab_size, embed_dim),
-    layers.Bidirectional(layers.LSTM(units, dropout=0.2)),
-    layers.Dense(units, activation='relu'),
-    layers.Dropout(0.5),
-    layers.Dense(target_length, activation='softmax')
-])
+model_inputs = layers.Input(shape=(None,), name="input_layer")
+x = layers.Embedding(vocab_size, embed_dim)(model_inputs)
+x = layers.Bidirectional(layers.LSTM(units, activation="relu"))(x)
+x = layers.Dense(units, activation="relu")(x)
+x = layers.Dropout(0.5)(x)
+model_outputs = layers.Dense(
+    target_length, activation="softmax", name="output_layer")(x)
+
+model = tf.keras.Model(model_inputs, model_outputs,
+                       name="intent_classificatio_model")
 
 optimizer = tf.keras.optimizers.Adam(lr=1e-2)
 model.compile(optimizer=optimizer,
@@ -109,3 +112,14 @@ df["inputs"] = inputs
 df["targets"] = targets
 
 df.to_csv("data/intents.csv")
+
+""" 
+# keras sequential api
+model = tf.keras.models.Sequential([
+    layers.Embedding(vocab_size, embed_dim),
+    layers.Bidirectional(layers.LSTM(units, dropout=0.2)),
+    layers.Dense(units, activation='relu'),
+    layers.Dropout(0.5),
+    layers.Dense(target_length, activation='softmax')
+])
+"""
