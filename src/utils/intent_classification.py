@@ -8,7 +8,7 @@ import tensorflow as tf
 
 from src.utils.text_preprocessing import preprocessing
 
-df = pd.read_csv("data/intents.csv")
+df = pd.read_csv("data/IntentClassificationData/finalIntent.csv")
 inputs = df["inputs"]
 
 model_path = "intent_classification_model/intent_classification_model.h5"
@@ -16,14 +16,14 @@ index_cat_val_pair =  "data/targets.json"
 
 nlp = spacy.load('en_core_web_sm')
 
-def get_intent(sentence) -> str:
+def get_intent(text) -> str:
     """ get intent of text using text classification
 
         inputs: text: str
         outputs: intent: str
     """
     
-    sentence = preprocessing(sentence.lower())
+    sentence = preprocessing(text.lower())
     tokenizer = tf.keras.preprocessing.text.Tokenizer(filters='', oov_token='<unk>')
     tokenizer.fit_on_texts(inputs)
 
@@ -47,7 +47,7 @@ def get_intent(sentence) -> str:
     pred = model(sent_seq)
     pred_class = np.argmax(pred.numpy(), axis=1)
     intent = trg_index_word[str(pred_class[0])]
-    return sentence, intent
+    return text, intent
 
 # helper functions
 # loading the categorial to index key value

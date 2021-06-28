@@ -1,10 +1,8 @@
 """ Training files for intent classification using tensorflow and keras """
 
-import io
-import re
 import json
-import numpy as np
 import pandas as pd
+import numpy as np
 
 from normalise import normalise
 
@@ -13,23 +11,11 @@ from tensorflow.keras import layers
 
 from src.config import logging
 from src.utils import parameters as p
-from src.utils.text_preprocessing import preprocessing
+from src.utils.load_data import load_text_data_from_json
 
 logging.info('loading json data')
 
-with io.open('data/intents.json') as f:
-    intents = json.load(f)
-
-logging.info('preprocessing the data')
-
-
-inputs, targets = [], []
-
-for intent in intents['intents']:
-    for text in intent['text']:
-        inputs.append(preprocessing(text))
-        targets.append(intent['intent'])
-
+inputs, targets = load_text_data_from_json()
 
 def tokenize_data(input_list):
     tokenizer = tf.keras.preprocessing.text.Tokenizer(filters='',
@@ -80,16 +66,21 @@ target_length = target_tensor.shape[1]
 
 logging.info('creating intent classification model')
 
-model_inputs = layers.Input(shape=(None,), name="input_layer")
-x = layers.Embedding(vocab_size, embed_dim)(model_inputs)
-x = layers.Bidirectional(layers.LSTM(units, activation="relu"))(x)
-x = layers.Dense(units, activation="relu")(x)
-x = layers.Dropout(0.5)(x)
-model_outputs = layers.Dense(
-    target_length, activation="softmax", name="output_layer")(x)
+def build_model(model_name):
+    model_inputs = layers.Input(shape=(None,), name="input_layer")
+    x = layers.Embedding(vocab_size, embed_dim)(model_inputs)
+    x = layers.Bidirectional(layers.LSTM(units, activation="relu"))(x)
+    x = layers.Dense(units, activation="relu")(x)
+    x = layers.Dropout(0.5)(x)
+    model_outputs = layers.Dense(
+        target_length, activation="softmax", name="output_layer")(x)
 
-model = tf.keras.Model(model_inputs, model_outputs,
-                       name="intent_classificatio_model")
+    model = tf.keras.Model(model_inputs, model_outputs,
+                        name=model_name)
+
+    return model
+
+model = build_model("intent_classification_model")
 
 optimizer = tf.keras.optimizers.Adam(lr=1e-2)
 model.compile(optimizer=optimizer,
@@ -108,11 +99,10 @@ model.save(p.INTENT_CLASSIFICATION_MODEL)
 logging.info('saving inputs and outputs to csv')
 
 df = pd.DataFrame()
+
 df["inputs"] = inputs
 df["targets"] = targets
-
-df.to_csv("data/intents.csv")
-
+df.to_csv("data/IntentClassificationData/finalIntent.csv")
 """ 
 # keras sequential api
 model = tf.keras.models.Sequential([

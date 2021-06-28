@@ -4,14 +4,32 @@
 2,help me with insulin concentration,intent1
 3,calculate right amount of medicine I need calculation for K G and concentration M L K G,intent2
 4,calculate right amount of medicine,intent2
-5,calculate right amount of medicine for K G and M L K G,intent2
+5,calculate right amount of medicine for X K G and X M L K G,intent2
 6,show me how to use insulin pen,intent3
 7,how to set up insulin pen,intent3
 8,how can I use the insulin pen,intent3
 9,how insulin pen work,intent3
 10,help me to set up insulin pen,intent3
-11,send a message to doctor Hi doctor everything went well,intent4
-12,send a message to doctor I checked the how to video again and it wa really helpful,intent4
-13,send a message to doctor Please let me know if I need you to meet again in the near future,intent4
-14,send a message to doctor Thanks for everything,intent4
-15,send a message to doctor where we can meet again,intent4
+11,show me video for setting up insulin pen,intent3
+12,send a message to doctor Hi doctor everything went well,intent4
+13,send a message to doctor I checked the how to video again and it wa really helpful,intent4
+14,send a message to doctor Please let me know if I need you to meet again in the near future,intent4
+15,send a message to doctor Thanks for everything,intent4
+16,send a message to doctor where we can meet again,intent4
+17,get concentration insulin needed for Wife X,intent1
+18,what's the right concentration for insulin to give someone,intent1
+19,help me with insulin concentration,intent1
+20,calculate right amount of medicine I need calculation for K G and concentration M L K G,intent2
+21,calculate right amount of medicine,intent2
+22,calculate right amount of medicine for X K G and X M L K G,intent2
+23,show me how to use insulin pen,intent3
+24,how to set up insulin pen,intent3
+25,how can I use the insulin pen,intent3
+26,how insulin pen work,intent3
+27,help me to set up insulin pen,intent3
+28,show me video for setting up insulin pen,intent3
+29,send a message to doctor Hi doctor everything went well,intent4
+30,send a message to doctor I checked the how to video again and it wa really helpful,intent4
+31,send a message to doctor Please let me know if I need you to meet again in the near future,intent4
+32,send a message to doctor Thanks for everything,intent4
+33,send a message to doctor where we can meet again,intent4

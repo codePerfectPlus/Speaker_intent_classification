@@ -22,3 +22,4 @@ THRESHOLD = 0.020
 # text-classification parameters
 INTENT_CLASSIFICATION_MODEL = "intent_classification_model/intent_classification_model.h5"
 INDEX_CAT_VAL_PAIR = "data/targets.json"
+JSON_DATA_DIR = "data/IntentClassificationData"
