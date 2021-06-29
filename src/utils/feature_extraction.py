@@ -1,6 +1,5 @@
 """ Feature extraction for voice classification """
 import numpy as np
-from scipy.spatial.distance import cdist, euclidean, cosine
 
 from src.utils.preprocess import get_fft_spectrum
 import src.utils.parameters as p
@@ -32,15 +31,3 @@ def get_embedding(model, wav_file, max_time):
     signal = get_fft_spectrum(wav_file, buckets_var)
     embedding = np.squeeze(model.predict(signal.reshape(1,*signal.shape,1)))
     return embedding
-
-
-def get_embedding_batch(model, wav_files, max_time):
-    return [ get_embedding(model, wav_file, max_time) for wav_file in wav_files ]
-
-
-def get_embeddings_from_list_file(model, list_file, max_time):
-    buckets_var = buckets(p.MAX_SEC, p.BUCKET_STEP, p.FRAME_STEP)
-    result = pd.read_csv(list_file, delimiter=",")
-    result['features'] = result['filename'].apply(lambda x: get_fft_spectrum(x, buckets_var))
-    result['embedding'] = result['features'].apply(lambda x: np.squeeze(model.predict(x.reshape(1,*x.shape,1))))
-    return result[['filename','speaker','embedding']]

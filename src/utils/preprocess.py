@@ -1,6 +1,6 @@
 import librosa
 import numpy as np
-from scipy.signal import lfilter, butter
+from scipy.signal import lfilter
 from python_speech_features import sigproc
 
 from src.utils import parameters as p
@@ -25,7 +25,7 @@ def remove_dc_and_dither(sin, sample_rate):
     else:
         print("Sample rate must be 16kHz or 8kHz only")
         exit(1)
-    sin = lfilter([1,-1], [1,-alpha], sin)
+    sin = lfilter([1, -1], [1, -alpha], sin)
     dither = np.random.random_sample(len(sin)) + np.random.random_sample(len(sin)) - 1
     spow = np.std(dither)
     sout = sin + 1e-6 * spow * dither

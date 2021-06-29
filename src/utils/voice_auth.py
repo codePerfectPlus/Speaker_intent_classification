@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from scipy.spatial.distance import euclidean, cosine, minkowski
+from scipy.spatial.distance import euclidean, cosine, minkowski, jaccard
 
 import logging
 import warnings
@@ -65,24 +65,24 @@ def recognize_user(file):
         logging.info("Failed to load weights from the weights file, please ensure *.pb file is present in the MODEL_FILE directory")
         exit()
         
-    distances = {}
-
     logging.info("Processing test sample....")
     logging.info("Comparing test sample against enroll samples....")
 
     test_result = get_embedding(model, file, p.MAX_SEC)
     test_embs = np.array(test_result.tolist())
 
+    distances = {}
     for emb in embeds:
         enroll_embs = np.load(os.path.join(p.EMBED_LIST_FILE, emb))
         speaker = emb.replace(".npy", "")
-        distance = euclidean(test_embs, enroll_embs)
+        distance = cosine(test_embs, enroll_embs)
         distances.update({speaker : distance})
 
     print(distances)
     print("Minimum value: ", min(list(distances.values())))
+    print(min(distances, key=distances.get))
 
-    if min(list(distances.values())) < p.THRESHOLD:
+    if min(list(distances.values())) < 0:
         response = min(distances, key=distances.get)
         return True, response
 
