@@ -82,7 +82,7 @@ def recognize_user(file):
     print("Minimum value: ", min(list(distances.values())))
     print(min(distances, key=distances.get))
 
-    if min(list(distances.values())) < 0:
+    if min(list(distances.values())) < 0.0030:
         response = min(distances, key=distances.get)
         return True, response
 
