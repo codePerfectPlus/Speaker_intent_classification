@@ -11,7 +11,7 @@ from src.text_utils.text_preprocessing import preprocessing
 df = pd.read_csv("data/IntentClassificationData/finalIntent.csv")
 inputs = df["inputs"]
 
-model_path = "intent_classification_model/intent_classification_model.h5"
+model_path = "intent_classification_model"
 index_cat_val_pair =  "data/targets.json"
 
 nlp = spacy.load('en_core_web_sm')
