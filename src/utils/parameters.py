@@ -20,6 +20,9 @@ THRESHOLD = 0.020
 
 
 # text-classification parameters
-INTENT_CLASSIFICATION_MODEL = "intent_classification_model/intent_classification_model.h5"
+INTENT_CLASSIFICATION_MODEL = "intent_classification_model"
 INDEX_CAT_VAL_PAIR = "data/targets.json"
 JSON_DATA_DIR = "data/IntentClassificationData"
+
+# Voice Auth v2 Model
+GMM_MODEL_PATH = "./gmm_models/"

@@ -11,7 +11,7 @@ from tensorflow.keras import layers
 
 from src.config import logging
 from src.utils import parameters as p
-from src.utils.load_data import load_text_data_from_json
+from src.text_utils.load_data import load_text_data_from_json
 
 logging.info('loading json data')
 
