@@ -1,7 +1,7 @@
 """ Flask app.py """
 import os
 import uuid
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, jsonify, Response, send_file
 from functools import wraps
 from pathlib import Path
 import logging
@@ -157,3 +157,4 @@ def get_text_intent_v2():
     return jsonify({
         'fulfillmentText': str(response),
         'source': 'webhook'})
+    

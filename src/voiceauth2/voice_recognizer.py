@@ -37,10 +37,7 @@ def recognize_user_v2(audio_path):
 	pred = np.argmax(log_likelihood)
 	identity = speakers[pred]
 
-	# if voice not recognized than terminate the process
-	if identity == 'unknown':
-		print("Not Recognized! Try again...")
-		return False, "Not Recognized! Try again..."
+	print(identity)
 
 	#print("Recognized as - ", identity)
 
