@@ -25,4 +25,4 @@ INDEX_CAT_VAL_PAIR = "data/targets.json"
 JSON_DATA_DIR = "data/IntentClassificationData"
 
 # Voice Auth v2 Model
-GMM_MODEL_PATH = "./gmm_models/"
+GMM_MODEL_PATH = "data/gmm_models/"

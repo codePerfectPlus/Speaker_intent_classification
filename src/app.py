@@ -3,14 +3,23 @@ import os
 import uuid
 from flask import Flask, request, jsonify, Response
 from functools import wraps
+from pathlib import Path
+import logging
 
-from src.voiceauth1.voice_auth import recognize_user_v1, enroll_user_v1
+#from src.voiceauth1.voice_auth import recognize_user_v1, enroll_user_v1
 from src.voiceauth2.voice_registration import enroll_user_v2
 from src.voiceauth2.voice_recognizer import recognize_user_v2
 
-from src.text_utils.intent_classification import get_intent
-from src.config import app, base_dir
+base_dir = Path(__file__).parent.parent
+app = Flask(__name__)
+app.config['DEBUG'] = False
 
+logging.basicConfig(format='[%(asctime)s] %(levelname)8s --- %(message)s ' +'(%(filename)s:%(lineno)s)',
+					datefmt='%d/%m/%Y %I:%M:%S %p',
+					level=logging.INFO,
+					handlers=[
+        				logging.FileHandler("debug.log", mode='a'),
+        				logging.StreamHandler()])
 
 def requires_auth(f):
     @wraps(f)
@@ -40,7 +49,7 @@ def authenticate():
 def home():
     return jsonify({"status": True, 'response': 200})
 
-
+'''
 @app.route('/api/v1/register', methods=['GET', 'POST'])
 @requires_auth
 def register_new_user_v1():
@@ -84,22 +93,7 @@ def authenticate_user_v1():
         return jsonify({'status': status, 'response': response})
 
     return jsonify({'status': True, 'response': 200})
-
-
-@app.route('/api/v1/getintent', methods=['GET', 'POST'])
-@requires_auth
-def get_text_intent():
-    """ Post api for intent classification """
-
-    if request.method == 'POST':
-        sentence = request.form["text"]
-
-        status, intent = get_intent(sentence)
-
-        return jsonify({'status': status, 'response': intent, "text": sentence})
-
-    return jsonify({'status': True, 'response': 200})
-
+'''
 
 @app.route('/api/v2/register', methods=['GET', 'POST'])
 @requires_auth
@@ -144,3 +138,22 @@ def authenticate_user_v2():
         return jsonify({'status': status, 'response': response})
 
     return jsonify({'status': True, 'response': 200})
+
+@app.route('/api/v2/getintent', methods=['POST'])
+@requires_auth
+def get_text_intent_v2():
+    req = request.get_json(silent=True, force=True)
+
+    query_result = req.get('queryResult')
+    query_text = query_result["queryText"]
+
+    query_intent = query_result.get('intent')['displayName']
+
+    response = {
+        "response": query_intent,
+        "text": query_text,
+        "status": 200
+    }
+    return jsonify({
+        'fulfillmentText': str(response),
+        'source': 'webhook'})
