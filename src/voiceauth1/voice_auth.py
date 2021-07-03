@@ -25,24 +25,21 @@ def enroll_user_v1(username, file):
             
         outputs: response
     """
-    if not os.path.isfile(os.path.join(p.EMBED_LIST_FILE, username + ".npy")):
-        try:
-            model = load_model(p.MODEL_FILE)
-            logging.info("Loading model weights from [{}]....".format(p.MODEL_FILE))
-        except:
-            return False, "Failed to load weights from the weights file, please ensure *.pb file is present in the MODEL_FILE directory"
-        try:
-            logging.info("Processing enroll sample....")
-            enroll_result = get_embedding(model, file, p.MAX_SEC)
-            
-            enroll_embs = np.array(enroll_result.tolist())
-        except Exception as e:
-            return False, "Error processing the input audio file. Make sure the path.", e
-
-        np.save(os.path.join(p.EMBED_LIST_FILE, username + ".npy"), enroll_embs)
-        return True, f"Successfully enrolled the {username} on server"
+    try:
+        model = load_model(p.MODEL_FILE)
+        logging.info("Loading model weights from [{}]....".format(p.MODEL_FILE))
+    except:
+        return False, "Failed to load weights from the weights file, please ensure *.pb file is present in the MODEL_FILE directory"
+    try:
+        logging.info("Processing enroll sample....")
+        enroll_result = get_embedding(model, file, p.MAX_SEC)
         
-    return False, f"{username} user already exists on server. Please choose a unique username."
+        enroll_embs = np.array(enroll_result.tolist())
+    except Exception as e:
+        return False, "Error processing the input audio file. Make sure the path.", e
+
+    np.save(os.path.join(p.EMBED_LIST_FILE, username + ".npy"), enroll_embs)
+    return True, f"Successfully enrolled the {username} on server"
 
 
 def recognize_user_v1(file):
@@ -80,14 +77,13 @@ def recognize_user_v1(file):
 
     print(distances)
     print("Minimum value: ", min(list(distances.values())))
-    print(min(distances, key=distances.get))
 
     if min(list(distances.values())) < 0.0030:
         response = min(distances, key=distances.get)
         return True, response
 
     else:
-        logging.info("Could not identify the user, try enrolling again with a clear voice sample")
+        print("Could not identify the user, try enrolling again with a clear voice sample")
         response = ("Could not identify the user, try enrolling again with a clear voice sample")
         return False, response
         

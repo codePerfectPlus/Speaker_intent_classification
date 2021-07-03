@@ -6,9 +6,10 @@ from functools import wraps
 from pathlib import Path
 import logging
 
-#from src.voiceauth1.voice_auth import recognize_user_v1, enroll_user_v1
+from src.voiceauth1.voice_auth import recognize_user_v1, enroll_user_v1
 from src.voiceauth2.voice_registration import enroll_user_v2
 from src.voiceauth2.voice_recognizer import recognize_user_v2
+import src.utils.parameters as p
 
 base_dir = Path(__file__).parent.parent
 app = Flask(__name__)
@@ -108,11 +109,17 @@ def register_new_user_v2():
 
         full_file_name = os.path.join(audio_directory, username + ".wav")
 
-        audio_file.save(full_file_name)
-        status, response = enroll_user_v2(username, full_file_name)
+        if not os.path.isfile(os.path.join(p.GMM_MODEL_PATH + username) + '.gmm'):
+            audio_file.save(full_file_name)
 
-        os.remove(full_file_name)
-        return jsonify({'status': status, 'response': response})
+            status, response = enroll_user_v1(username, full_file_name)
+            enroll_user_v2(username, full_file_name)
+
+
+            os.remove(full_file_name)
+            return jsonify({'status': status, 'response': response})
+
+        return jsonify({'status': False, 'response': f"{username} user already exists on server. Please choose a unique username."})
 
     return jsonify({'status': True, 'response': 200})
 
@@ -132,10 +139,15 @@ def authenticate_user_v2():
 
         audio_file.save(full_file_name)
 
-        status, response = recognize_user_v2(full_file_name)
+        status_v1, response_v1 = recognize_user_v1(full_file_name)
+        if status_v1 == False:
+            return jsonify({'status': status_v1, 'response': response_v1})
 
+        status_v2, response_v2 = recognize_user_v2(full_file_name)
         os.remove(full_file_name)
-        return jsonify({'status': status, 'response': response})
+        return jsonify({'status': status_v2, 'response': response_v2})
+
+        
 
     return jsonify({'status': True, 'response': 200})
 
